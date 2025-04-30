@@ -5,7 +5,7 @@ let auditCounter = 1; // Счетчик для нумерации записей
 // Получаем элементы
 const generateFighterBtn = document.getElementById('generate-fighter-code');
 const fighterCodeBox = document.getElementById('fighter-code');
-const encryptBtn = document.getElementById('encrypt-btn');
+const downloadQRBtn = document.getElementById('download-qr-btn');
 const fighterTimestamp = document.getElementById('fighter-timestamp');
 
 const generateAuditBtn = document.getElementById('generate-audit-number');
@@ -63,17 +63,17 @@ function generateAuditNumber() {
 function generateQRCode(code) {
     const qrCanvas = document.getElementById('qr-code');
 
-    // Делаем QR-код невидимым
+    // Сначала делаем QR-код невидимым (убираем класс visible)
     qrCanvas.classList.remove('visible');
 
     // Генерируем QR-код
     QRCode.toCanvas(qrCanvas, code, { errorCorrectionLevel: 'H' }, (error) => {
         if (error) console.error("Ошибка при генерации QR-кода:", error);
 
-        // После завершения добавляем visible для плавного появления
+        // После завершения генерации добавляем класс visible для плавного появления
         setTimeout(() => {
             qrCanvas.classList.add('visible');
-        }, 50); // Задержка для эффекта
+        }, 50); // Небольшая задержка для эффекта
     });
 }
 
