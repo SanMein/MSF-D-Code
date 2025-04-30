@@ -26,12 +26,12 @@
         <!-- Модуль бойца -->
         <div class="module fighter-module">
             <h2>[ ENCODE :: UNIT IDENTITY // ACCESS LEVEL: CLASSIFIED ]</h2>
-            <p>«Каждый боец системы “SFO” получает уникальный тактический код, применяемый для идентификации в операциях, логистике и кодированных каналах связи.»</p>
-            <button id="generate-fighter-code">:: СГЕНЕРИРОВАТЬ КОД ::</button>
+            <p>«Каждый оперативник MSF получает уникальный тактический код, применяемый для идентификации в операциях, логистике и кодированных каналах связи. Генерация происходит через сервер “Black Watch”.»</p>
+            <button id="generate-fighter-code">:: СГЕНЕРИРОВАТЬ КОД БОЙЦА ::</button>
             <div class="output">
                 <div id="fighter-code" class="code-box">Код появится здесь</div>
                 <canvas id="qr-code" class="qr-code"></canvas>
-                <button id="encrypt-btn">ЗАШИФРОВАТЬ</button>
+                <button id="download-qr-btn">СКАЧАТЬ QR-КОД</button>
                 <div class="timestamp">Дата/время генерации: <span id="fighter-timestamp">--</span></div>
             </div>
         </div>
@@ -39,7 +39,7 @@
         <!-- Модуль аудита -->
         <div class="module audit-module">
             <h2>[ AUDIT :: OPERATIVE AUDIT // OFFICIAL USE ]</h2>
-            <p>«Каждому оператору ЧВК присваивается уникальный номер аудита, который используется для архивирования, проверки подлинности задач и декодирования отчетов. Обязателен для всех учатсников и исполнителей ЧВК.»</p>
+            <p>«Каждый оператор имеет уникальный номер аудита, который используется для архивирования, проверки подлинности задач и декодирования отчетов. Обязателен для всех.»</p>
             <button id="generate-audit-number">:: ПОЛУЧИТЬ НОМЕР АУДИТА ::</button>
             <div class="output">
                 <div id="audit-number" class="code-box">Номер появится здесь</div>
