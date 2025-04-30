@@ -18,6 +18,20 @@ const auditWindow = document.getElementById('audit-window');
 const closeAudit = document.getElementById('close-audit');
 const auditCount = document.getElementById('audit-count');
 
+// Загружаем архив из localStorage при загрузке страницы
+function loadArchiveFromLocalStorage() {
+    const savedArchive = localStorage.getItem('archive');
+    if (savedArchive) {
+        archive = JSON.parse(savedArchive); // Восстанавливаем массив из JSON
+        updateAuditCount(); // Обновляем счетчик записей
+    }
+}
+
+// Сохраняем архив в localStorage
+function saveArchiveToLocalStorage() {
+    localStorage.setItem('archive', JSON.stringify(archive)); // Сохраняем массив в JSON
+}
+
 // Функция для записи в архив
 function addToArchive(type, code) {
     const now = new Date();
@@ -29,6 +43,7 @@ function addToArchive(type, code) {
     // Добавляем запись в архив
     archive.push(`${timestamp} | ${type} | ${plainCode}`);
     updateAuditCount(); // Обновляем счетчик записей
+    saveArchiveToLocalStorage(); // Сохраняем архив в localStorage
 }
 
 // Функция для отображения архива
@@ -166,6 +181,7 @@ closeAudit.addEventListener('click', () => {
 
 // Плавное появление модулей
 document.addEventListener('DOMContentLoaded', () => {
+    loadArchiveFromLocalStorage(); // Загружаем архив из localStorage
     document.querySelectorAll('.module').forEach((module, index) => {
         setTimeout(() => {
             module.classList.add('visible');
