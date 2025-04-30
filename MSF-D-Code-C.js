@@ -35,13 +35,27 @@ function saveArchiveToLocalStorage() {
 // Функция для записи в архив
 function addToArchive(type, code) {
     const now = new Date();
-    const timestamp = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+    const day = String(now.getDate()).padStart(2, '0'); // День с ведущим нулём
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Месяц с ведущим нулём
+    const year = String(now.getFullYear()).slice(-2); // Последние две цифры года
+    const hours = String(now.getHours()).padStart(2, '0'); // Часы
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // Минуты
+    const seconds = String(now.getSeconds()).padStart(2, '0'); // Секунды
 
-    // Убираем HTML-теги из кода
-    const plainCode = code.replace(/<[^>]*>/g, ''); // Удаляем все теги
+    // Определяем смещение относительно UTC
+    const offsetMinutes = now.getTimezoneOffset(); // Смещение в минутах (минус для часов впереди UTC)
+    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60)); // Часовая часть смещения
+    const offsetSign = offsetMinutes > 0 ? '-' : '+'; // Знак смещения (+ или -)
+    const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(Math.abs(offsetMinutes % 60)).padStart(2, '0')}`;
+
+    // Получаем текущий уровень доступа
+    const currentAccessLevel = accessLevel.textContent.split(": ")[1].split(" //")[0];
+
+    // Формируем запись в новом формате
+    const logEntry = `${day}/${month}/${year} | ${utcOffset} - ${seconds}/${minutes}/${hours} | role: ${currentAccessLevel} | ${type} | ${code}`;
 
     // Добавляем запись в архив
-    archive.push(`${timestamp} | ${type} | ${plainCode}`);
+    archive.push(logEntry);
     updateAuditCount(); // Обновляем счетчик записей
     saveArchiveToLocalStorage(); // Сохраняем архив в localStorage
 }
@@ -49,7 +63,7 @@ function addToArchive(type, code) {
 // Функция для отображения архива
 function showAuditLog() {
     const auditLog = document.getElementById('audit-log');
-    auditLog.textContent = archive.join('\n----------\n'); // Соединяем записи разделителем
+    auditLog.textContent = archive.join('\n-----------------------\n'); // Соединяем записи разделителем
 }
 
 // Обновление счетчика записей
@@ -59,7 +73,7 @@ function updateAuditCount() {
 
 // Генерация случайного кода бойца
 function generateFighterCode() {
-    const prefix = "MSF-";
+    const prefix = "SFO-";
     const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
     const randomPart2 = Math.random().toString(36).substr(2, 4).toUpperCase();
     const randomPart3 = Math.random().toString(36).substr(2, 4).toUpperCase();
