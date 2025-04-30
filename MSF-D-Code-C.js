@@ -78,15 +78,21 @@ function generateQRCode(code) {
 }
 
 // Скачивание QR-кода
-function downloadQRCode() {
+downloadQRBtn.addEventListener('click', () => {
     const canvas = document.getElementById('qr-code');
+    if (!canvas || !canvas.getContext) {
+        alert("QR-код ещё не сгенерирован!");
+        return;
+    }
+
+    // Создаём ссылку для скачивания
     const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/jpeg');
+    link.href = canvas.toDataURL('image/jpeg'); // Преобразуем canvas в изображение
     const now = new Date();
-    const fileName = `${now.getDate()}${now.getMonth() + 1}${now.getFullYear()}-${now.getSeconds()}${now.getMinutes()}${now.getHours()}.jpg`;
-    link.download = fileName;
-    link.click();
-}
+    const fileName = `QR-Code-${now.getDate()}${now.getMonth() + 1}${now.getFullYear()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}.jpg`;
+    link.download = fileName; // Имя файла
+    link.click(); // Скачиваем файл
+});
 
 // Генерация кода бойца
 generateFighterBtn.addEventListener('click', () => {
