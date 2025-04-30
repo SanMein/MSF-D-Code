@@ -59,7 +59,7 @@ function updateAuditCount() {
 
 // Генерация случайного кода бойца
 function generateFighterCode() {
-    const prefix = "SFO-";
+    const prefix = "MSF-";
     const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
     const randomPart2 = Math.random().toString(36).substr(2, 4).toUpperCase();
     const randomPart3 = Math.random().toString(36).substr(2, 4).toUpperCase();
