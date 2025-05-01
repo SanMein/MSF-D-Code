@@ -16,6 +16,7 @@ const errorMessage = document.getElementById('error-message');
 const auditButton = document.getElementById('audit-button');
 const auditWindow = document.getElementById('audit-window');
 const closeAudit = document.getElementById('close-audit');
+const clearAuditButton = document.getElementById('clear-audit'); // Кнопка сброса аудита
 const auditCount = document.getElementById('audit-count');
 
 // Загружаем архив из localStorage при загрузке страницы
@@ -63,7 +64,7 @@ function addToArchive(type, code) {
 // Функция для отображения архива
 function showAuditLog() {
     const auditLog = document.getElementById('audit-log');
-    auditLog.textContent = archive.join('\n-----------------------\n'); // Соединяем записи разделителем
+    auditLog.textContent = archive.join('\n----------------------\n'); // Соединяем записи разделителем
 }
 
 // Обновление счетчика записей
@@ -129,14 +130,14 @@ generateFighterBtn.addEventListener('click', () => {
     fighterCodeBox.innerHTML = code;
     fighterTimestamp.textContent = new Date().toLocaleString();
     generateQRCode(code);
-    addToArchive("UNIT IDENTITY", code); // Запись в архив
+    addToArchive("unit identity", code); // Запись в архив
 });
 
 // Генерация номера аудита
 generateAuditBtn.addEventListener('click', () => {
     const auditNumberHTML = generateAuditNumber();
     auditNumberBox.innerHTML = auditNumberHTML;
-    addToArchive("OPERATIVE AUDIT", auditNumberHTML); // Запись в архив
+    addToArchive("operate audit", auditNumberHTML); // Запись в архив
 });
 
 // Обработка ввода кода доступа (только при нажатии Enter)
@@ -182,6 +183,23 @@ function showErrorMessage() {
         errorMessage.classList.add('hidden'); // Добавляем класс "hidden"
     }, 5000);
 }
+
+// Функция для сброса аудита
+function clearAudit() {
+    // Очищаем массив архива
+    archive = [];
+    updateAuditCount(); // Обновляем счетчик записей
+    showAuditLog(); // Очищаем отображение архива
+    saveArchiveToLocalStorage(); // Удаляем данные из localStorage
+    alert("Архив успешно очищен."); // Уведомление пользователя
+}
+
+// Добавляем обработчик для кнопки сброса аудита
+clearAuditButton.addEventListener('click', () => {
+    if (confirm("Очистить архив?")) {
+        clearAudit();
+    }
+});
 
 // Открытие и закрытие окна аудита
 auditButton.addEventListener('click', () => {
