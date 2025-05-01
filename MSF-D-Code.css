@@ -46,79 +46,13 @@ body {
     }
 }
 
-/* Графика в углах */
-.corner-top-left {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(0, 255, 0, 0.2), transparent);
-    pointer-events: none;
-}
-
-.corner-top-right {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 0, 0, 0.2), transparent);
-    pointer-events: none;
-}
-
-.corner-bottom-left {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(0, 0, 255, 0.2), transparent);
-    pointer-events: none;
-}
-
-.corner-bottom-right {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255, 255, 0, 0.2), transparent);
-    pointer-events: none;
-}
-
-/* Линии, расходящиеся из углов */
-.corner-line {
-    position: fixed;
-    width: 1px;
-    height: 50%;
-    background: rgba(0, 255, 0, 0.3);
-    transform-origin: center;
-    pointer-events: none;
-}
-
-.corner-line.top-left {
-    top: 0;
-    left: 0;
-    transform: rotate(-45deg) translateY(-50%);
-}
-
-.corner-line.top-right {
-    top: 0;
-    right: 0;
-    transform: rotate(45deg) translateY(-50%);
-}
-
-.corner-line.bottom-left {
-    bottom: 0;
-    left: 0;
-    transform: rotate(45deg) translateY(50%);
-}
-
-.corner-line.bottom-right {
-    bottom: 0;
-    right: 0;
-    transform: rotate(-45deg) translateY(50%);
+/* Логотип */
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100px;
+    height: auto;
 }
 
 /* Верхний правый HUD */
@@ -130,13 +64,27 @@ body {
     color: yellow;
 }
 
-/* Логотип */
-.logo {
+/* Кнопка аудита */
+.audit-btn {
     position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 50px;
-    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: darkgray;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.audit-btn:hover {
+    background-color: gray;
+}
+
+.audit-btn.hidden {
+    display: none;
 }
 
 /* Основной контейнер */
@@ -144,6 +92,9 @@ body {
     text-align: center;
     max-width: 600px;
     padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Модули */
@@ -277,29 +228,6 @@ button:hover {
     opacity: 1;
 }
 
-/* Кнопка аудита */
-.audit-btn {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    padding: 10px 20px;
-    background-color: darkgray;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.audit-btn:hover {
-    background-color: gray;
-}
-
-.audit-btn.hidden {
-    display: none;
-}
-
 /* Окно аудита */
 .audit-window {
     position: fixed;
@@ -341,10 +269,54 @@ button:hover {
     white-space: pre-wrap;
 }
 
+/* Кнопка сброса аудита */
+#clear-audit {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: darkred;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#clear-audit:hover {
+    background-color: red;
+}
+
 /* Нижняя строка состояния */
 .terminal-status {
     position: absolute;
     bottom: 10px;
     color: gray;
     font-size: 12px;
+}
+
+/* Всплывающее уведомление */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: translate(-50%, 20px); /* Начальное положение за пределами экрана */
+    z-index: 1001;
+}
+
+.notification.visible {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Плавное появление */
+}
+
+.notification.hidden {
+    display: none; /* Скрываем уведомление */
 }
