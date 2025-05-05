@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSF: Code Protocol</title>
-    <link rel="stylesheet" href="MSF-D-Code.css">
-    <link rel="icon" type="image/png" href="MSF-043 MPC (Raphael-6).png">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" type="image/png" href="MSF.png">
 </head>
 <body>
-    <!-- Цифровой шум -->
-    <div class="noise"></div>
+    <!-- Полотно для цифрового шума -->
+    <canvas id="noise-canvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
 
     <!-- Верхний правый HUD -->
     <div class="hud" id="access-level">
@@ -17,7 +17,7 @@
     </div>
 
     <!-- Логотип в углу -->
-    <img src="MSF-043 MPC (Raphael-6).png" alt="MSF Logo" class="logo">
+    <img src="MSF.png" alt="MSF Logo" class="logo">
 
     <!-- Кнопка аудита (появляется только на уровне Альфа) -->
     <button id="audit-button" class="audit-btn hidden">AUDIT (<span id="audit-count">0</span>)</button>
@@ -27,8 +27,8 @@
         <!-- Модуль бойца -->
         <div class="module fighter-module">
             <h2>[ ENCODE :: UNIT IDENTITY // ACCESS LEVEL: CLASSIFIED ]</h2>
-            <p>«Каждый оперативник MSF получает уникальный тактический код, применяемый для идентификации в операциях, логистике и кодированных каналах связи.»</p>
-            <button id="generate-fighter-code">:: ПОЛУЧИТЬ КОД ::</button>
+            <p>«Каждый оператор имеет уникальный номер аудита, который используется для архивирования, проверки подлинности задач и декодирования отчетов. Обязателен для всех.»</p>
+            <button id="generate-fighter-code">:: СГЕНЕРИРОВАТЬ КОД БОЙЦА ::</button>
             <div class="output">
                 <div id="fighter-code" class="code-box">Код появится здесь</div>
                 <canvas id="qr-code" class="qr-code"></canvas>
@@ -40,7 +40,7 @@
         <!-- Модуль аудита -->
         <div class="module audit-module">
             <h2>[ AUDIT :: OPERATIVE AUDIT // OFFICIAL USE ]</h2>
-            <p>«Каждый оператор имеет уникальный номер аудита, который используется для архивирования, проверки подлинности задач и декодирования отчетов. Обязателен для всех.»</p>
+            <p>«Каждый оперативник MSF получает уникальный тактический код, применяемый для идентификации в операциях, логистике и кодированных каналах связи.»</p>
             <button id="generate-audit-number">:: ПОЛУЧИТЬ НОМЕР АУДИТА ::</button>
             <div class="output">
                 <div id="audit-number" class="code-box">Номер появится здесь</div>
@@ -68,6 +68,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-    <script src="MSF-D-Code.js"></script>
+    <script src="index.js"></script>
+    <script src="noise.js"></script>
 </body>
 </html>
