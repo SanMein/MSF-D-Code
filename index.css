@@ -9,59 +9,148 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
     position: relative;
 }
 
-/* Цифровой шум */
-.noise {
+/* Стили для canvas */
+#noise-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(0, 255, 0, 0.05),
-        rgba(0, 255, 0, 0.05) 1px,
-        transparent 1px,
-        transparent 10px
-    );
-    animation: noise 0.5s infinite steps(10);
     z-index: -1;
+    opacity: 0.5;
 }
 
-@keyframes noise {
-    0%, 100% {
-        transform: translate(0, 0);
-    }
-    10% {
-        transform: translate(-1px, 1px);
-    }
-    20% {
-        transform: translate(2px, -2px);
-    }
-    30% {
-        transform: translate(-3px, 3px);
-    }
+/* Навигационное меню */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 1);
+    z-index: 1000;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    margin: 0 15px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: gray;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.navbar a.active {
+    color: yellow;
+}
+
+.navbar a:hover {
+    color: yellow;
 }
 
 /* Логотип */
 .logo {
     position: absolute;
-    top: 10px;
+    top: 50px;
     left: 10px;
     width: 100px;
     height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
 }
 
-/* Верхний правый HUD */
-.hud {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 12px;
+.logo:hover {
+    transform: scale(1.1);
+}
+
+/* Надпись уровня доступа */
+.access-level-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
     color: yellow;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Контейнер */
+.container {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 1);
+    max-width: 800px;
+    width: 90%;
+    margin-top: 80px;
+    z-index: 1;
+}
+
+/* Модули */
+.module {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.module.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.module h2 {
+    color: yellow;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.module p {
+    color: lightgray;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+/* Анимационные классы */
+.animate-heading {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.animate-text {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.animate-btn {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 /* Кнопка аудита */
@@ -85,45 +174,6 @@ body {
 
 .audit-btn.hidden {
     display: none;
-}
-
-/* Основной контейнер */
-.container {
-    text-align: center;
-    max-width: 600px;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
-
-/* Модули */
-.module {
-    margin-bottom: 30px;
-    padding: 20px;
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.module.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.module h2 {
-    font-size: 18px;
-    color: yellow;
-    margin-bottom: 10px;
-}
-
-.module p {
-    font-size: 14px;
-    color: gray;
-    margin-bottom: 15px;
 }
 
 /* Кнопки */
@@ -288,10 +338,11 @@ button:hover {
 
 /* Нижняя строка состояния */
 .terminal-status {
-    position: absolute;
+    position: fixed;
     bottom: 10px;
-    color: gray;
+    color: lightgray;
     font-size: 12px;
+    z-index: 1000;
 }
 
 /* Всплывающее уведомление */
