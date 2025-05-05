@@ -130,14 +130,14 @@ generateFighterBtn.addEventListener('click', () => {
     fighterCodeBox.innerHTML = code;
     fighterTimestamp.textContent = new Date().toLocaleString();
     generateQRCode(code);
-    addToArchive("unit identity", code); // Запись в архив
+    addToArchive("operate audit", code); // Запись в архив (swapped)
 });
 
 // Генерация номера аудита
 generateAuditBtn.addEventListener('click', () => {
     const auditNumberHTML = generateAuditNumber();
     auditNumberBox.innerHTML = auditNumberHTML;
-    addToArchive("operate audit", auditNumberHTML); // Запись в архив
+    addToArchive("unit identity", auditNumberHTML); // Запись в архив (swapped)
 });
 
 // Обработка ввода кода доступа (только при нажатии Enter)
