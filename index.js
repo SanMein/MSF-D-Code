@@ -1,222 +1,297 @@
-// Архив кодов
-let archive = [];
-let auditCounter = 1; // Счетчик для нумерации записей
-
-// Получаем элементы
-const generateFighterBtn = document.getElementById('generate-fighter-code');
-const fighterCodeBox = document.getElementById('fighter-code');
-const downloadQRBtn = document.getElementById('download-qr-btn');
-const fighterTimestamp = document.getElementById('fighter-timestamp');
-
-const generateAuditBtn = document.getElementById('generate-audit-number');
-const auditNumberBox = document.getElementById('audit-number');
-const accessLevel = document.getElementById('access-level');
-const unitBindingInput = document.getElementById('unit-binding');
-const errorMessage = document.getElementById('error-message');
-const auditButton = document.getElementById('audit-button');
-const auditWindow = document.getElementById('audit-window');
-const closeAudit = document.getElementById('close-audit');
-const clearAuditButton = document.getElementById('clear-audit'); // Кнопка сброса аудита
-const auditCount = document.getElementById('audit-count');
-
-// Загружаем архив из localStorage при загрузке страницы
-function loadArchiveFromLocalStorage() {
-    const savedArchive = localStorage.getItem('archive');
-    if (savedArchive) {
-        archive = JSON.parse(savedArchive); // Восстанавливаем массив из JSON
-        updateAuditCount(); // Обновляем счетчик записей
-    }
-}
-
-// Сохраняем архив в localStorage
-function saveArchiveToLocalStorage() {
-    localStorage.setItem('archive', JSON.stringify(archive)); // Сохраняем массив в JSON
-}
-
-// Функция для записи в архив
-function addToArchive(type, code) {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0'); // День с ведущим нулём
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Месяц с ведущим нулём
-    const year = String(now.getFullYear()).slice(-2); // Последние две цифры года
-    const hours = String(now.getHours()).padStart(2, '0'); // Часы
-    const minutes = String(now.getMinutes()).padStart(2, '0'); // Минуты
-    const seconds = String(now.getSeconds()).padStart(2, '0'); // Секунды
-
-    // Определяем смещение относительно UTC
-    const offsetMinutes = now.getTimezoneOffset(); // Смещение в минутах (минус для часов впереди UTC)
-    const offsetHours = Math.abs(Math.floor(offsetMinutes / 60)); // Часовая часть смещения
-    const offsetSign = offsetMinutes > 0 ? '-' : '+'; // Знак смещения (+ или -)
-    const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(Math.abs(offsetMinutes % 60)).padStart(2, '0')}`;
-
-    // Получаем текущий уровень доступа
-    const currentAccessLevel = accessLevel.textContent.split(": ")[1].split(" //")[0];
-
-    // Формируем запись в новом формате
-    const logEntry = `${day}/${month}/${year} | ${utcOffset} - ${seconds}/${minutes}/${hours} | role: ${currentAccessLevel} | ${type} | ${code}`;
-
-    // Добавляем запись в архив
-    archive.push(logEntry);
-    updateAuditCount(); // Обновляем счетчик записей
-    saveArchiveToLocalStorage(); // Сохраняем архив в localStorage
-}
-
-// Функция для отображения архива
-function showAuditLog() {
-    const auditLog = document.getElementById('audit-log');
-    auditLog.textContent = archive.join('\n----------------------\n'); // Соединяем записи разделителем
-}
-
-// Обновление счетчика записей
-function updateAuditCount() {
-    auditCount.textContent = archive.length; // Обновляем текст счетчика
-}
-
-// Генерация случайного кода бойца
-function generateFighterCode() {
-    const prefix = "MSF-";
-    const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
-    const randomPart2 = Math.random().toString(36).substr(2, 4).toUpperCase();
-    const randomPart3 = Math.random().toString(36).substr(2, 4).toUpperCase();
-    return `${prefix}${randomPart1}-${randomPart2}-${randomPart3}`;
-}
-
-// Генерация номера аудита
-function generateAuditNumber() {
-    const prefix = "MSF-D-";
-    const mainNumber = Math.floor(100000 + Math.random() * 900000); // Шестизначное число
-    const statusNumber = Math.floor(Math.random() * 10); // Однозначное число
-    return `${prefix}${mainNumber}-${statusNumber}`;
-}
-
-// Генерация QR-кода
-function generateQRCode(code) {
-    const qrCanvas = document.getElementById('qr-code');
-
-    // Сначала делаем QR-код невидимым (убираем класс visible)
-    qrCanvas.classList.remove('visible');
-
-    // Генерируем QR-код
-    QRCode.toCanvas(qrCanvas, code, { errorCorrectionLevel: 'H' }, (error) => {
-        if (error) console.error("Ошибка при генерации QR-кода:", error);
-
-        // После завершения генерации добавляем класс visible для плавного появления
-        setTimeout(() => {
-            qrCanvas.classList.add('visible');
-        }, 50); // Небольшая задержка для эффекта
-    });
-}
-
-// Скачивание QR-кода
-downloadQRBtn.addEventListener('click', () => {
-    const canvas = document.getElementById('qr-code');
-    if (!canvas || !canvas.getContext) {
-        alert("QR-код ещё не сгенерирован!");
-        return;
-    }
-
-    // Создаём ссылку для скачивания
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/jpeg'); // Преобразуем canvas в изображение
-    const now = new Date();
-    const fileName = `QR-Code-${now.getDate()}${now.getMonth() + 1}${now.getFullYear()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}.jpg`;
-    link.download = fileName; // Имя файла
-    link.click(); // Скачиваем файл
-});
-
-// Генерация кода бойца
-generateFighterBtn.addEventListener('click', () => {
-    const code = generateFighterCode();
-    fighterCodeBox.innerHTML = code;
-    fighterTimestamp.textContent = new Date().toLocaleString();
-    generateQRCode(code);
-    addToArchive("operate audit", code); // Запись в архив (swapped)
-});
-
-// Генерация номера аудита
-generateAuditBtn.addEventListener('click', () => {
-    const auditNumberHTML = generateAuditNumber();
-    auditNumberBox.innerHTML = auditNumberHTML;
-    addToArchive("unit identity", auditNumberHTML); // Запись в архив (swapped)
-});
-
-// Обработка ввода кода доступа (только при нажатии Enter)
-unitBindingInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        const code = unitBindingInput.value.trim();
-        handleAccessCode(code);
-    }
-});
-
-// Обработка кода доступа
-function handleAccessCode(code) {
-    if (code === "GAMMAC-917230485619827364012398172034-TACOPS") {
-        updateAccessLevel("γάμμα (Гамма)", "green");
-        auditButton.classList.add('hidden'); // Скрываем кнопку аудита
-    } else if (code === "BETACX-042918637561290837465120934576-CMDOPS") {
-        updateAccessLevel("βῆτа (Бета)", "blue");
-        auditButton.classList.add('hidden'); // Скрываем кнопку аудита
-    } else if (code === "ALPHAC-781296540128399317460325120458-GENCOM") {
-        updateAccessLevel("ἄλφα (Альфа)", "red");
-        auditButton.classList.remove('hidden'); // Показываем кнопку аудита
-    } else {
-        showErrorMessage(); // Показываем ошибку при неправильном коде
-        updateAccessLevel("δέλτα (Дельта)", "yellow"); // Сбрасываем уровень на Дельта
-        auditButton.classList.add('hidden'); // Скрываем кнопку аудита
-    }
-}
-
-// Обновление уровня доступа
-function updateAccessLevel(levelText, levelColor) {
-    accessLevel.textContent = `Уровень допуска: ${levelText} // Статус: Подключён`;
-    accessLevel.style.color = levelColor;
-}
-
-// Показать сообщение об ошибке
-function showErrorMessage() {
-    errorMessage.classList.remove('hidden'); // Показываем сообщение
-    errorMessage.classList.add('visible'); // Делаем его видимым
-
-    // Через 5 секунд скрываем сообщение
-    setTimeout(() => {
-        errorMessage.classList.remove('visible'); // Прячем сообщение
-        errorMessage.classList.add('hidden'); // Добавляем класс "hidden"
-    }, 5000);
-}
-
-// Функция для сброса аудита
-function clearAudit() {
-    // Очищаем массив архива
-    archive = [];
-    updateAuditCount(); // Обновляем счетчик записей
-    showAuditLog(); // Очищаем отображение архива
-    saveArchiveToLocalStorage(); // Удаляем данные из localStorage
-    alert("Архив успешно очищен."); // Уведомление пользователя
-}
-
-// Добавляем обработчик для кнопки сброса аудита
-clearAuditButton.addEventListener('click', () => {
-    if (confirm("Очистить архив?")) {
-        clearAudit();
-    }
-});
-
-// Открытие и закрытие окна аудита
-auditButton.addEventListener('click', () => {
-    auditWindow.classList.remove('hidden');
-    showAuditLog();
-});
-
-closeAudit.addEventListener('click', () => {
-    auditWindow.classList.add('hidden');
-});
-
-// Плавное появление модулей
 document.addEventListener('DOMContentLoaded', () => {
-    loadArchiveFromLocalStorage(); // Загружаем архив из localStorage
-    document.querySelectorAll('.module').forEach((module, index) => {
-        setTimeout(() => {
-            module.classList.add('visible');
-        }, 500 + index * 300); // Задержка для каждого модуля
+    // Устанавливаем начальные состояния для анимаций
+    gsap.set('.container', { opacity: 0 });
+    gsap.set('.logo', { opacity: 0, scale: 0.8 });
+    gsap.set('.access-level-display', { opacity: 0, x: 20 });
+    gsap.set('.module', { opacity: 0, y: 20 });
+    gsap.set('.animate-heading', { opacity: 0, y: -20 });
+    gsap.set('.animate-text', { opacity: 0, x: -20 });
+    gsap.set('.animate-btn', { opacity: 0, y: 20 });
+
+    // Анимация логотипа
+    gsap.to('.logo', {
+        opacity: 1,
+        scale: 1,
+        duration: 1,
+        ease: 'power2.out'
     });
+
+    // Анимация уровня доступа
+    gsap.to('.access-level-display', {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+    });
+
+    // Анимация контейнера
+    gsap.to('.container', {
+        opacity: 1,
+        duration: 1,
+        delay: 0.2,
+        ease: 'power2.out'
+    });
+
+    // Анимация модулей
+    gsap.to('.module', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.3,
+        ease: 'power2.out',
+        delay: 0.4
+    });
+
+    // Анимация заголовков
+    gsap.to('.animate-heading', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power2.out',
+        delay: 0.6
+    });
+
+    // Анимация текста
+    gsap.to('.animate-text', {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power2.out',
+        delay: 0.8
+    });
+
+    // Анимация кнопок
+    gsap.to('.animate-btn', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power2.out',
+        delay: 1
+    });
+
+    // Резервная видимость
+    setTimeout(() => {
+        document.querySelectorAll('.container, .logo, .access-level-display, .module, .animate-heading, .animate-text, .animate-btn').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+        });
+    }, 2000);
+
+    // Архив кодов
+    let archive = [];
+    let auditCounter = 1;
+
+    // Получаем элементы
+    const generateFighterBtn = document.getElementById('generate-fighter-code');
+    const fighterCodeBox = document.getElementById('fighter-code');
+    const downloadQRBtn = document.getElementById('download-qr-btn');
+    const fighterTimestamp = document.getElementById('fighter-timestamp');
+    const generateAuditBtn = document.getElementById('generate-audit-number');
+    const auditNumberBox = document.getElementById('audit-number');
+    const accessLevel = document.getElementById('access-level');
+    const unitBindingInput = document.getElementById('unit-binding');
+    const notification = document.getElementById('notification');
+    const auditButton = document.getElementById('audit-button');
+    const auditWindow = document.getElementById('audit-window');
+    const closeAudit = document.getElementById('close-audit');
+    const clearAuditButton = document.getElementById('clear-audit');
+    const auditCount = document.getElementById('audit-count');
+
+    // Загружаем архив из localStorage
+    function loadArchiveFromLocalStorage() {
+        const savedArchive = localStorage.getItem('archive');
+        if (savedArchive) {
+            archive = JSON.parse(savedArchive);
+            updateAuditCount();
+        }
+    }
+
+    // Сохраняем архив в localStorage
+    function saveArchiveToLocalStorage() {
+        localStorage.setItem('archive', JSON.stringify(archive));
+    }
+
+    // Функция для записи в архив
+    function addToArchive(type, code) {
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = String(now.getFullYear()).slice(-2);
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const offsetMinutes = now.getTimezoneOffset();
+        const offsetHours = Math.abs(Math.floor(offsetMinutes / 60));
+        const offsetSign = offsetMinutes > 0 ? '-' : '+';
+        const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(Math.abs(offsetMinutes % 60)).padStart(2, '0')}`;
+        const currentAccessLevel = accessLevel.textContent.split(": ")[1].split(" //")[0];
+        const logEntry = `${day}/${month}/${year} | ${utcOffset} - ${seconds}/${minutes}/${hours} | role: ${currentAccessLevel} | ${type} | ${code}`;
+        archive.push(logEntry);
+        updateAuditCount();
+        saveArchiveToLocalStorage();
+    }
+
+    // Функция для отображения архива
+    function showAuditLog() {
+        const auditLog = document.getElementById('audit-log');
+        auditLog.textContent = archive.join('\n----------------------\n');
+    }
+
+    // Обновление счетчика записей
+    function updateAuditCount() {
+        auditCount.textContent = archive.length;
+    }
+
+    // Генерация случайного кода бойца
+    function generateFighterCode() {
+        const prefix = "MSF-";
+        const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
+        const randomPart2 = Math.random().toString(36).substr(2, 4).toUpperCase();
+        const randomPart3 = Math.random().toString(36).substr(2, 4).toUpperCase();
+        return `${prefix}${randomPart1}-${randomPart2}-${randomPart3}`;
+    }
+
+    // Генерация номера аудита
+    function generateAuditNumber() {
+        const prefix = "MSF-D-";
+        const mainNumber = Math.floor(100000 + Math.random() * 900000);
+        const statusNumber = Math.floor(Math.random() * 10);
+        return `${prefix}${mainNumber}-${statusNumber}`;
+    }
+
+    // Генерация QR-кода
+    function generateQRCode(code) {
+        const qrCanvas = document.getElementById('qr-code');
+        gsap.set(qrCanvas, { opacity: 0, scale: 0.5 });
+        QRCode.toCanvas(qrCanvas, code, { errorCorrectionLevel: 'H' }, (error) => {
+            if (error) console.error("Ошибка при генерации QR-кода:", error);
+            gsap.to(qrCanvas, { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' });
+        });
+    }
+
+    // Скачивание QR-кода
+    downloadQRBtn.addEventListener('click', () => {
+        const canvas = document.getElementById('qr-code');
+        if (!canvas || !canvas.getContext) {
+            showNotification('QR-код ещё не сгенерирован!');
+            return;
+        }
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/jpeg');
+        const now = new Date();
+        const fileName = `QR-Code-${now.getDate()}${now.getMonth() + 1}${now.getFullYear()}-${now.getHours()}${now.getMinutes()}${now.getSeconds()}.jpg`;
+        link.download = fileName;
+        link.click();
+    });
+
+    // Генерация кода бойца
+    generateFighterBtn.addEventListener('click', () => {
+        const code = generateFighterCode();
+        fighterCodeBox.textContent = code;
+        fighterTimestamp.textContent = new Date().toLocaleString();
+        generateQRCode(code);
+        addToArchive("operate audit", code);
+    });
+
+    // Генерация номера аудита
+    generateAuditBtn.addEventListener('click', () => {
+        const auditNumber = generateAuditNumber();
+        auditNumberBox.textContent = auditNumber;
+        addToArchive("unit identity", auditNumber);
+    });
+
+    // Обработка ввода кода доступа
+    unitBindingInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            const code = unitBindingInput.value.trim();
+            handleAccessCode(code);
+        }
+    });
+
+    // Обработка кода доступа
+    function handleAccessCode(code) {
+        if (code === "GAMMAC-917230485619827364012398172034-TACOPS") {
+            updateAccessLevel("γάμμα (Гамма)", "green");
+            auditButton.classList.add('hidden');
+            showNotification("Доступ уровня Гамма подтверждён.");
+        } else if (code === "BETACX-042918637561290837465120934576-CMDOPS") {
+            updateAccessLevel("βῆτα (Бета)", "blue");
+            auditButton.classList.add('hidden');
+            showNotification("Доступ уровня Бета подтверждён.");
+        } else if (code === "ALPHAC-781296540128399317460325120458-GENCOM") {
+            updateAccessLevel("ἄλφα (Альфа)", "red");
+            auditButton.classList.remove('hidden');
+            gsap.fromTo(auditButton, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' });
+            showNotification("Доступ уровня Альфа подтверждён. Архив доступен.");
+        } else {
+            updateAccessLevel("δέλτα (Дельта)", "yellow");
+            auditButton.classList.add('hidden');
+            showNotification("Ошибка доступа. Уровень сброшен на Дельта.");
+        }
+    }
+
+    // Обновление уровня доступа
+    function updateAccessLevel(levelText, levelColor) {
+        accessLevel.textContent = `Уровень допуска: ${levelText} // Статус: Подключён`;
+        accessLevel.style.color = levelColor;
+    }
+
+    // Показать уведомление
+    function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.remove('hidden');
+        gsap.fromTo(notification,
+            { opacity: 0, y: -20 },
+            { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }
+        );
+        setTimeout(() => {
+            gsap.to(notification, {
+                opacity: 0,
+                y: -20,
+                duration: 0.5,
+                ease: 'power2.in',
+                onComplete: () => {
+                    notification.classList.add('hidden');
+                    notification.textContent = '';
+                }
+            });
+        }, 3000);
+    }
+
+    // Функция для сброса аудита
+    function clearAudit() {
+        archive = [];
+        updateAuditCount();
+        showAuditLog();
+        saveArchiveToLocalStorage();
+        showNotification('Архив успешно очищен.');
+    }
+
+    // Обработчики событий
+    clearAuditButton.addEventListener('click', () => {
+        if (confirm("Очистить архив?")) {
+            clearAudit();
+        }
+    });
+
+    auditButton.addEventListener('click', () => {
+        auditWindow.classList.remove('hidden');
+        showAuditLog();
+        gsap.fromTo(auditWindow, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out' });
+    });
+
+    closeAudit.addEventListener('click', () => {
+        gsap.to(auditWindow, {
+            opacity: 0,
+            scale: 0.9,
+            duration: 0.5,
+            ease: 'power2.in',
+            onComplete: () => auditWindow.classList.add('hidden')
+        });
+    });
+
+    loadArchiveFromLocalStorage();
 });
