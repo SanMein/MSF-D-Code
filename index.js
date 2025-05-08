@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Устанавливаем начальные состояния для анимаций
     gsap.set('.container', { opacity: 0 });
     gsap.set('.logo', { opacity: 0, scale: 0.8 });
     gsap.set('.access-level-display', { opacity: 0, x: 20 });
@@ -8,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set('.animate-text', { opacity: 0, x: -20 });
     gsap.set('.animate-btn', { opacity: 0, y: 20 });
 
-    // Анимация логотипа
+    
     gsap.to('.logo', {
         opacity: 1,
         scale: 1,
@@ -16,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    // Анимация уровня доступа
+    
     gsap.to('.access-level-display', {
         opacity: 1,
         x: 0,
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    // Анимация контейнера
+    
     gsap.to('.container', {
         opacity: 1,
         duration: 1,
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    // Анимация модулей
+    
     gsap.to('.module', {
         opacity: 1,
         y: 0,
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.4
     });
 
-    // Анимация заголовков
+    
     gsap.to('.animate-heading', {
         opacity: 1,
         y: 0,
@@ -52,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.6
     });
 
-    // Анимация текста
+    
     gsap.to('.animate-text', {
         opacity: 1,
         x: 0,
@@ -62,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.8
     });
 
-    // Анимация кнопок
+    
     gsap.to('.animate-btn', {
         opacity: 1,
         y: 0,
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 1
     });
 
-    // Резервная видимость
+    
     setTimeout(() => {
         document.querySelectorAll('.container, .logo, .access-level-display, .module, .animate-heading, .animate-text, .animate-btn').forEach(el => {
             el.style.opacity = '1';
@@ -80,11 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 2000);
 
-    // Архив кодов
+    
     let archive = [];
     let auditCounter = 1;
 
-    // Получаем элементы
+    
     const generateFighterBtn = document.getElementById('generate-fighter-code');
     const fighterCodeBox = document.getElementById('fighter-code');
     const downloadQRBtn = document.getElementById('download-qr-btn');
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearAuditButton = document.getElementById('clear-audit');
     const auditCount = document.getElementById('audit-count');
 
-    // Загружаем архив из localStorage
+    
     function loadArchiveFromLocalStorage() {
         const savedArchive = localStorage.getItem('archive');
         if (savedArchive) {
@@ -109,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Сохраняем архив в localStorage
+    
     function saveArchiveToLocalStorage() {
         localStorage.setItem('archive', JSON.stringify(archive));
     }
 
-    // Функция для записи в архив
+    
     function addToArchive(type, code) {
         const now = new Date();
         const day = String(now.getDate()).padStart(2, '0');
@@ -134,18 +133,18 @@ document.addEventListener('DOMContentLoaded', () => {
         saveArchiveToLocalStorage();
     }
 
-    // Функция для отображения архива
+    
     function showAuditLog() {
         const auditLog = document.getElementById('audit-log');
         auditLog.textContent = archive.join('\n----------------------\n');
     }
 
-    // Обновление счетчика записей
+    
     function updateAuditCount() {
         auditCount.textContent = archive.length;
     }
 
-    // Генерация случайного кода бойца
+    
     function generateFighterCode() {
         const prefix = "MSF-";
         const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
@@ -154,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${prefix}${randomPart1}-${randomPart2}-${randomPart3}`;
     }
 
-    // Генерация номера аудита
+    
     function generateAuditNumber() {
         const prefix = "MSF-D-";
         const mainNumber = Math.floor(100000 + Math.random() * 900000);
@@ -162,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${prefix}${mainNumber}-${statusNumber}`;
     }
 
-    // Генерация QR-кода
+    
     function generateQRCode(code) {
         const qrCanvas = document.getElementById('qr-code');
         gsap.set(qrCanvas, { opacity: 0, scale: 0.5 });
@@ -172,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Скачивание QR-кода
+    
     downloadQRBtn.addEventListener('click', () => {
         const canvas = document.getElementById('qr-code');
         if (!canvas || !canvas.getContext) {
@@ -187,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.click();
     });
 
-    // Генерация кода бойца
+    
     generateFighterBtn.addEventListener('click', () => {
         const code = generateFighterCode();
         fighterCodeBox.textContent = code;
@@ -196,14 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
         addToArchive("operate audit", code);
     });
 
-    // Генерация номера аудита
+    
     generateAuditBtn.addEventListener('click', () => {
         const auditNumber = generateAuditNumber();
         auditNumberBox.textContent = auditNumber;
         addToArchive("unit identity", auditNumber);
     });
 
-    // Обработка ввода кода доступа
+    
     unitBindingInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             const code = unitBindingInput.value.trim();
@@ -211,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Обработка кода доступа
+    
     function handleAccessCode(code) {
         if (code === "GAMMAC-917230485619827364012398172034-TACOPS") {
             updateAccessLevel("γάμμα (Гамма)", "green");
@@ -233,13 +232,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Обновление уровня доступа
+    
     function updateAccessLevel(levelText, levelColor) {
         accessLevel.textContent = `Уровень допуска: ${levelText} // Статус: Подключён`;
         accessLevel.style.color = levelColor;
     }
 
-    // Показать уведомление
+    
     function showNotification(message) {
         notification.textContent = message;
         notification.classList.remove('hidden');
@@ -261,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // Функция для сброса аудита
+    
     function clearAudit() {
         archive = [];
         updateAuditCount();
@@ -270,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification('Архив успешно очищен.');
     }
 
-    // Обработчики событий
+    
     clearAuditButton.addEventListener('click', () => {
         if (confirm("Очистить архив?")) {
             clearAudit();
