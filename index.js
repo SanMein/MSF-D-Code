@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.set('.animate-text', { opacity: 0, x: -20 });
     gsap.set('.animate-btn', { opacity: 0, y: 20 });
 
-    
     gsap.to('.logo', {
         opacity: 1,
         scale: 1,
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    
     gsap.to('.access-level-display', {
         opacity: 1,
         x: 0,
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    
     gsap.to('.container', {
         opacity: 1,
         duration: 1,
@@ -31,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     });
 
-    
     gsap.to('.module', {
         opacity: 1,
         y: 0,
@@ -41,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.4
     });
 
-    
     gsap.to('.animate-heading', {
         opacity: 1,
         y: 0,
@@ -51,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.6
     });
 
-    
+
     gsap.to('.animate-text', {
         opacity: 1,
         x: 0,
@@ -61,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 0.8
     });
 
-    
     gsap.to('.animate-btn', {
         opacity: 1,
         y: 0,
@@ -71,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         delay: 1
     });
 
-    
     setTimeout(() => {
         document.querySelectorAll('.container, .logo, .access-level-display, .module, .animate-heading, .animate-text, .animate-btn').forEach(el => {
             el.style.opacity = '1';
@@ -79,11 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 2000);
 
-    
     let archive = [];
     let auditCounter = 1;
 
-    
     const generateFighterBtn = document.getElementById('generate-fighter-code');
     const fighterCodeBox = document.getElementById('fighter-code');
     const downloadQRBtn = document.getElementById('download-qr-btn');
@@ -99,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearAuditButton = document.getElementById('clear-audit');
     const auditCount = document.getElementById('audit-count');
 
-    
+
     function loadArchiveFromLocalStorage() {
         const savedArchive = localStorage.getItem('archive');
         if (savedArchive) {
@@ -108,12 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    
     function saveArchiveToLocalStorage() {
         localStorage.setItem('archive', JSON.stringify(archive));
     }
 
-    
     function addToArchive(type, code) {
         const now = new Date();
         const day = String(now.getDate()).padStart(2, '0');
@@ -133,18 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
         saveArchiveToLocalStorage();
     }
 
-    
     function showAuditLog() {
         const auditLog = document.getElementById('audit-log');
         auditLog.textContent = archive.join('\n----------------------\n');
     }
 
-    
     function updateAuditCount() {
         auditCount.textContent = archive.length;
     }
 
-    
     function generateFighterCode() {
         const prefix = "MSF-";
         const randomPart1 = Math.random().toString(36).substr(2, 4).toUpperCase();
@@ -153,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${prefix}${randomPart1}-${randomPart2}-${randomPart3}`;
     }
 
-    
     function generateAuditNumber() {
         const prefix = "MSF-D-";
         const mainNumber = Math.floor(100000 + Math.random() * 900000);
@@ -161,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${prefix}${mainNumber}-${statusNumber}`;
     }
 
-    
     function generateQRCode(code) {
         const qrCanvas = document.getElementById('qr-code');
         gsap.set(qrCanvas, { opacity: 0, scale: 0.5 });
@@ -171,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    
     downloadQRBtn.addEventListener('click', () => {
         const canvas = document.getElementById('qr-code');
         if (!canvas || !canvas.getContext) {
@@ -186,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         link.click();
     });
 
-    
     generateFighterBtn.addEventListener('click', () => {
         const code = generateFighterCode();
         fighterCodeBox.textContent = code;
@@ -195,14 +177,12 @@ document.addEventListener('DOMContentLoaded', () => {
         addToArchive("operate audit", code);
     });
 
-    
     generateAuditBtn.addEventListener('click', () => {
         const auditNumber = generateAuditNumber();
         auditNumberBox.textContent = auditNumber;
         addToArchive("unit identity", auditNumber);
     });
 
-    
     unitBindingInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             const code = unitBindingInput.value.trim();
@@ -210,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    
     function handleAccessCode(code) {
         if (code === "GAMMAC-917230485619827364012398172034-TACOPS") {
             updateAccessLevel("γάμμα (Гамма)", "green");
@@ -232,13 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    
     function updateAccessLevel(levelText, levelColor) {
         accessLevel.textContent = `Уровень допуска: ${levelText} // Статус: Подключён`;
         accessLevel.style.color = levelColor;
     }
 
-    
     function showNotification(message) {
         notification.textContent = message;
         notification.classList.remove('hidden');
@@ -260,7 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    
     function clearAudit() {
         archive = [];
         updateAuditCount();
@@ -269,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification('Архив успешно очищен.');
     }
 
-    
     clearAuditButton.addEventListener('click', () => {
         if (confirm("Очистить архив?")) {
             clearAudit();
@@ -291,6 +266,5 @@ document.addEventListener('DOMContentLoaded', () => {
             onComplete: () => auditWindow.classList.add('hidden')
         });
     });
-
     loadArchiveFromLocalStorage();
 });
