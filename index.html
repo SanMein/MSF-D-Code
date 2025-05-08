@@ -9,28 +9,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
 </head>
 <body>
-    <!-- Полотно для цифрового шума -->
     <canvas id="noise-canvas"></canvas>
-
-    <!-- Логотип -->
     <img src="MSF.png" alt="MSF Logo" class="logo">
-
-    <!-- Надпись уровня доступа -->
     <div class="access-level-display" id="access-level">
         Уровень допуска: δέλτα (Дельта) // Статус: Подключён
     </div>
-
-    <!-- Кнопка аудита -->
     <button id="audit-button" class="btn animate-btn hidden">AUDIT (<span id="audit-count">0</span>)</button>
-
-    <!-- Контейнер ввода кода доступа -->
     <div class="unit-binding animate-text">
         Вход в сервер: <input type="text" id="unit-binding" placeholder="[ввод кода]" maxlength="50">
     </div>
-
-    <!-- Основной контейнер -->
     <div class="container">
-        <!-- Модуль бойца -->
         <div class="module fighter-module">
             <h2 class="animate-heading">[ ENCODE :: UNIT IDENTITY // ACCESS LEVEL: CLASSIFIED ]</h2>
             <p class="animate-text">«Каждый оператор имеет уникальный номер аудита, который используется для архивирования, проверки подлинности задач и декодирования отчетов. Обязателен для всех.»</p>
@@ -42,8 +30,6 @@
                 <div class="timestamp animate-text">Дата/время генерации: <span id="fighter-timestamp">--</span></div>
             </div>
         </div>
-
-        <!-- Модуль аудита -->
         <div class="module audit-module">
             <h2 class="animate-heading">[ AUDIT :: OPERATIVE AUDIT // OFFICIAL USE ]</h2>
             <p class="animate-text">«Каждый оперативник MSF получает уникальный тактический код, применяемый для идентификации в операциях, логистике и кодированных каналах связи.»</p>
@@ -53,8 +39,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Окно аудита -->
     <div id="audit-window" class="audit-window hidden">
         <div class="audit-header">
             <span>АРХИВ</span>
@@ -63,15 +47,10 @@
         </div>
         <div id="audit-log" class="audit-log"></div>
     </div>
-
-    <!-- Контейнер уведомлений -->
     <div id="notification" class="notification hidden"></div>
-
-    <!-- Нижняя строка состояния -->
     <div class="terminal-status">
         :: MONITORING TRAFFIC [SECURE LINK] ::
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script src="index.js"></script>
     <script src="noise.js"></script>
