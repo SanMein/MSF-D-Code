@@ -13,12 +13,10 @@ function initNoise() {
         console.error('Failed to get 2D context for canvas!');
         return;
     }
-
-    // Устанавливаем размеры canvas
+    
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    // Обновляем размеры при изменении окна
+    
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -60,14 +58,12 @@ function initNoise() {
 
     console.log('Starting noise animation...');
     animate();
-
-    // Останавливаем анимацию при закрытии страницы
+    
     window.addEventListener('beforeunload', () => {
         cancelAnimationFrame(animationFrameId);
     });
 }
 
-// Убеждаемся, что скрипт запускается после полной загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM fully loaded, initializing noise...');
     initNoise();
